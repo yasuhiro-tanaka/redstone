@@ -1,0 +1,24 @@
+/.settings
+/target
+/config.xml
+/debug.log
+/jnetpcap.dll
+*.iml
+
+/item.dat
+/item.dat.log
+*.log
+/2022-05/
+/bin/
+/lib/
+/dumpcap.txt
+/dumplog.pcap
+/item_data - コピー.txt
+/nettrace.cab
+/nettrace.etl
+/Packet.dll
+/readme.txt
+/tcpcap.txt
+/unknown_packetlog.txt
+/wpcap.dll
+/パケット解析.txt
