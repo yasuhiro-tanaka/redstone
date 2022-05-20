@@ -115,4 +115,13 @@ public final class RamidoreUtil {
 
         return intValueFromDescHexString(toHex(b));
     }
+    
+    /**
+     * intを3桁カンマ区切りのStringに変換.
+     * @param num
+     * @return
+     */
+    public static String thoudsndsSeparate(int num) {
+    	return String.format("%,d", num);
+    }
 }

@@ -374,6 +374,9 @@ public class ChatLoggerController extends AbstractMainController {
 
         logic.getItemLogic().setItemTable(itemTable);
         logic.getItemLogic().setNumOfGold(numOfGold);
+        
+        logic.getHuntLogic().setNumOfKillMob(numOfKillMobLabel);
+        
 
         setUpContextMenu(sakebiChatTable);
         setUpContextMenu(normalChatTable);

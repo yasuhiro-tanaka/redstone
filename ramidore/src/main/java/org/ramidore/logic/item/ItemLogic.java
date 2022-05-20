@@ -398,7 +398,7 @@ public class ItemLogic implements IPacketExecutable, IConfigurable {
 	}
 	
 	private String formatNumOfGold(int gold) {
-		return String.format("%,d", gold);
+		return RamidoreUtil.thoudsndsSeparate(gold);
 	}
 
 }

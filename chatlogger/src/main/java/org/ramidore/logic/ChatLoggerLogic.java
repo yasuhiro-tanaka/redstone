@@ -16,16 +16,22 @@
 
 package org.ramidore.logic;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.LinkedList;
+import java.util.Properties;
+
 import org.ramidore.core.PacketData;
-import org.ramidore.logic.chat.*;
+import org.ramidore.logic.chat.GuildChatLogic;
+import org.ramidore.logic.chat.MimiChatLogic;
+import org.ramidore.logic.chat.NormalChatLogic;
+import org.ramidore.logic.chat.PartyChatLogic;
+import org.ramidore.logic.chat.SakebiChatLogic;
+import org.ramidore.logic.hunt.HuntLogic;
 import org.ramidore.logic.item.ItemLogic;
 import org.ramidore.logic.system.DameonMessageLogic;
 import org.ramidore.logic.system.RedstoneLogic;
 
-import java.util.LinkedList;
-import java.util.Properties;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * . メインロジック
@@ -99,6 +105,12 @@ public class ChatLoggerLogic extends AbstractMainLogic {
      */
     @Getter
     private ItemLogic itemLogic;
+    
+    /**
+     * 狩り情報
+     */
+    @Getter
+    private HuntLogic huntLogic;
 
     /**
      * コンストラクタ.
@@ -118,6 +130,9 @@ public class ChatLoggerLogic extends AbstractMainLogic {
 
         // アイテム関連
         itemLogic = new ItemLogic();
+        
+        // 狩り情報
+        huntLogic = new HuntLogic();
     }
 
     @Override
@@ -184,6 +199,10 @@ public class ChatLoggerLogic extends AbstractMainLogic {
 
         if (itemLogic.execute(data)) {
             return true;
+        }
+        
+        if(huntLogic.execute(data)) {
+        	return true;
         }
 
         return false;
