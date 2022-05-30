@@ -20,13 +20,15 @@ import java.util.LinkedList;
 import java.util.Properties;
 
 import org.ramidore.core.PacketData;
+import org.ramidore.logic.analysis.PacketAnalyzeLogic;
 import org.ramidore.logic.chat.GuildChatLogic;
 import org.ramidore.logic.chat.MimiChatLogic;
 import org.ramidore.logic.chat.NormalChatLogic;
 import org.ramidore.logic.chat.PartyChatLogic;
 import org.ramidore.logic.chat.SakebiChatLogic;
-import org.ramidore.logic.hunt.HuntLogic;
+import org.ramidore.logic.hunt.HuntInfoLogic;
 import org.ramidore.logic.item.ItemLogic;
+import org.ramidore.logic.party.PartyListLogic;
 import org.ramidore.logic.system.DameonMessageLogic;
 import org.ramidore.logic.system.RedstoneLogic;
 
@@ -38,7 +40,7 @@ import lombok.Setter;
  *
  * @author atmark
  */
-public class ChatLoggerLogic extends AbstractMainLogic {
+public class MessageKeeperLogic extends AbstractMainLogic {
 
     /**
      * お知らせ表示の初期設定.
@@ -110,12 +112,24 @@ public class ChatLoggerLogic extends AbstractMainLogic {
      * 狩り情報
      */
     @Getter
-    private HuntLogic huntLogic;
+    private HuntInfoLogic huntInfoLogic;
+    
+    /**
+     * パーティリスト関連
+     */
+    @Getter
+    private PartyListLogic partyListLogic;
+    
+    /**
+     * パケット調査用
+     */
+    @Getter
+    private PacketAnalyzeLogic packetAnalyzeLogic;
 
     /**
      * コンストラクタ.
      */
-    public ChatLoggerLogic() {
+    public MessageKeeperLogic() {
 
         // チャット関連
         sakebiChatLogic = new SakebiChatLogic();
@@ -132,15 +146,21 @@ public class ChatLoggerLogic extends AbstractMainLogic {
         itemLogic = new ItemLogic();
         
         // 狩り情報
-        huntLogic = new HuntLogic();
+        huntInfoLogic = new HuntInfoLogic();
+        
+        // パーティリスト関連
+        partyListLogic = new PartyListLogic();
+        
+        // パケット解析
+        packetAnalyzeLogic = new PacketAnalyzeLogic();
     }
 
     @Override
     public boolean execute(PacketData data) {
 
         // 短いデータは無視する
-        if (data.getRawData().length < 17) {
-            return false;
+        if (data.getStrData().length() <= 40) {
+            return true;
         }
 
         if (dameonMessageLogic.execute(data)) {
@@ -201,7 +221,15 @@ public class ChatLoggerLogic extends AbstractMainLogic {
             return true;
         }
         
-        if(huntLogic.execute(data)) {
+        if(huntInfoLogic.execute(data)) {
+        	return true;
+        }
+        
+        if(partyListLogic.execute(data)) {
+        	return true;
+        }
+        
+        if(packetAnalyzeLogic.execute(data)) {
         	return true;
         }
 

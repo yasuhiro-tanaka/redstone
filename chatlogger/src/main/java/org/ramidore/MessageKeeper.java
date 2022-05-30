@@ -16,40 +16,42 @@
 
 package org.ramidore;
 
+import org.ramidore.util.SoundUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * . メインクラス
  *
  * @author atmark
  */
-public class ChatLogger extends Application {
+public class MessageKeeper extends Application {
 
     /**
      * . Logger
      */
-    private static final Logger LOG = LoggerFactory.getLogger(ChatLogger.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MessageKeeper.class);
 
     /**
      * アプリケーション名.
      */
-    private static final String APPLICATION_NAME = "ChatLogger";
+    private static final String APPLICATION_NAME = "MessageKeeper";
 
     /**
      * FXMLのパス.
      */
-    private static final String FXML = "/chatLogger.fxml";
+    private static final String FXML = "/messagekeeper.fxml";
 
     /**
      * Controller.
      */
-    private ChatLoggerController controller;
+    private MessageKeeperController controller;
 
     @Override
     public void start(final Stage stage) throws Exception {
@@ -68,11 +70,12 @@ public class ChatLogger extends Application {
 
         Scene scene = new Scene(root, controller.getStageWidth(), controller.getStageHeight());
 
-        scene.getStylesheets().add("chatlogger.css");
+        scene.getStylesheets().add("messagekeeper.css");
 
         stage.setScene(scene);
-
+        
         controller.setUpStage(stage);
+        SoundUtil.setStage(stage);
 
         stage.show();
     }
@@ -99,4 +102,5 @@ public class ChatLogger extends Application {
             LOG.debug(e.getMessage(), e);
         }
     }
+    
 }

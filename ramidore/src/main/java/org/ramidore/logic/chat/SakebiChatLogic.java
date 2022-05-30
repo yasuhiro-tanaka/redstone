@@ -68,7 +68,9 @@ public class SakebiChatLogic extends AbstractChatLogic {
 
             String content = RamidoreUtil.encode(m.group(2), Const.ENCODING);
 
-            addData(new SakebiChatTable(data.getDate(), name, content));
+            SakebiChatTable chatData = new SakebiChatTable(data.getDate(), name, content);
+            addData(chatData);
+            scrollTo(chatData);
 
             LOG.info("【" + name + "】 " + content);
 

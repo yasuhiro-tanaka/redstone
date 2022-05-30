@@ -16,18 +16,20 @@
 
 package org.ramidore.logic.chat;
 
-import javafx.collections.ObservableList;
-import javafx.scene.control.TableView;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.util.List;
+
 import org.ramidore.bean.ChatTable;
 import org.ramidore.core.IConfigurable;
 import org.ramidore.core.INoticeable;
 import org.ramidore.core.PacketData;
 import org.ramidore.logic.AbstractLogic;
 
-import java.util.List;
+import javafx.application.Platform;
+import javafx.collections.ObservableList;
+import javafx.scene.control.TableView;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 /**
  * . チャット関連の基底クラス
@@ -106,4 +108,14 @@ public abstract class AbstractChatLogic extends AbstractLogic implements INotice
     public final boolean isNoticeable() {
         return enabled;
     }
+    
+    public void scrollTo(ChatTable item) {
+		if (table == null) {
+			throw new NullPointerException();
+		}
+
+		Platform.runLater(() -> {
+			table.scrollTo(item);
+		});
+	}
 }

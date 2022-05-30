@@ -16,7 +16,6 @@
 
 package org.ramidore.logic.item;
 
-import java.awt.Toolkit;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Map;
@@ -32,6 +31,7 @@ import org.ramidore.core.IConfigurable;
 import org.ramidore.core.PacketData;
 import org.ramidore.logic.IPacketExecutable;
 import org.ramidore.util.RamidoreUtil;
+import org.ramidore.util.SoundUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,7 +64,8 @@ public class ItemLogic implements IPacketExecutable, IConfigurable {
 	 * 手動取得.
 	 */
 	private static final String PATTERN_MANUAL_PICKUP = "^(?:.{2})*2200381100000000........(....)........(....)....(....)....(....)....3C000000..(?:.{2})*$";
-	private static final String PATTERN_MANUAL_PICKUP_2022 = "^.*003200381100000000(....)....(....)........(....)....(....)....(....)....3C000000.*$";
+	private static final String PATTERN_MANUAL_PICKUP_PART = "3200381100000000(........)(....)........(....)....(....)....(....)....3C00000000";
+	private static final String PATTERN_MANUAL_PICKUP_WHOLE = "^.*3200381100000000.*3C00000000.*$";
 
 	/**
 	 * . 正規表現オブジェクト
@@ -74,7 +75,8 @@ public class ItemLogic implements IPacketExecutable, IConfigurable {
 	/**
 	 * . 正規表現オブジェクト
 	 */
-	private static Pattern patternManualPickup = Pattern.compile(PATTERN_MANUAL_PICKUP_2022);
+	private static Pattern patternManualPickupWhole = Pattern.compile(PATTERN_MANUAL_PICKUP_WHOLE);
+	private static Pattern patternManualPickupPart = Pattern.compile(PATTERN_MANUAL_PICKUP_PART);
 
 	/**
 	 * 通知するか
@@ -112,14 +114,14 @@ public class ItemLogic implements IPacketExecutable, IConfigurable {
 	@Getter
 	@Setter
 	private TableView<ItemTable> itemTable;
-	
+
 	/**
 	 * 取得ゴールド合計表示用ラベル
 	 */
 	@Getter
 	@Setter
 	private Label numOfGold;
-	
+
 	/**
 	 * 取得ゴールド合計
 	 */
@@ -183,7 +185,7 @@ public class ItemLogic implements IPacketExecutable, IConfigurable {
 //            itemTable.scrollTo(newItem);
 
 			if (isNotify(id, opId1, opId2, opId3, name, opName1, opName2, opName3)) {
-				notifySound();
+				SoundUtil.notifyDefaultSound();
 			}
 
 			LOG.info("自動取得 : " + itemName);
@@ -191,66 +193,72 @@ public class ItemLogic implements IPacketExecutable, IConfigurable {
 			return true;
 		}
 
-		Matcher mManualPickup = patternManualPickup.matcher(data.getStrData());
+		Matcher mManualPickupWhole = patternManualPickupWhole.matcher(data.getStrData());
 
-		if (mManualPickup.matches()) {
+		if (mManualPickupWhole.matches()) {
+			LOG.debug("アイテム取得.");
+			Matcher manualPickupPartMatcher = patternManualPickupPart.matcher(data.getStrData());
+			while (manualPickupPartMatcher.find()) {
+				String partString = manualPickupPartMatcher.group();
+				String id = manualPickupPartMatcher.group(2);
 
-			String id = mManualPickup.group(2);
+				LOG.debug("find [" + partString + "]");
+				LOG.debug("ID [" + id + "]");
 
-			String name = "未知のアイテム : " + id;
+				String name = "未知のアイテム : " + id;
 
-			if (itemMap.containsKey(id)) {
-				name = itemMap.get(id).getName();
+				if (itemMap.containsKey(id)) {
+					name = itemMap.get(id).getName();
+				}
+
+				if ("0000".equals(id)) {
+					// ゴールド取得は取得アイテムテーブルに出さない。別のラベルに出す。
+					int pikkingUpGold = RamidoreUtil.intValueFromDescHexString(manualPickupPartMatcher.group(1));
+					gold += pikkingUpGold;
+					LOG.debug("Gold [" + pikkingUpGold + "]");
+					Platform.runLater(() -> {
+						numOfGold.setText(formatNumOfGold(gold));
+					});
+					return true;
+				}
+
+				String opId1 = null;
+				String opName1;
+				try {
+					opId1 = manualPickupPartMatcher.group(3);
+					opName1 = getOptionName(opId1);
+				} catch (IllegalStateException e) {
+					opName1 = StringUtils.EMPTY;
+				}
+
+				String opId2 = null;
+				String opName2;
+				try {
+					opId2 = manualPickupPartMatcher.group(4);
+					opName2 = getOptionName(opId2);
+				} catch (IllegalStateException e) {
+					opName2 = StringUtils.EMPTY;
+				}
+
+				String opId3 = null;
+				String opName3;
+				try {
+					opId3 = manualPickupPartMatcher.group(5);
+					opName3 = getOptionName(opId3);
+				} catch (IllegalStateException e) {
+					opName3 = StringUtils.EMPTY;
+				}
+
+				String itemName = opName1 + opName2 + opName3 + name;
+
+				ItemTable newItem = new ItemTable(data.getDate(), itemName);
+				itemTable.getItems().add(newItem);
+				scrollTo(newItem);
+
+				if (isNotify(id, opId1, opId2, opId3, name, opName1, opName2, opName3)) {
+					SoundUtil.notifyDefaultSound();
+				}
 			}
-
-			if ("0000".equals(id)) {
-				// ゴールド取得は取得アイテムテーブルに出さない。別のラベルに出す。
-				gold += RamidoreUtil.intValueFromDescHexString(mManualPickup.group(1));
-				Platform.runLater(() -> {
-					numOfGold.setText(formatNumOfGold(gold));
-				});
-				return true;
-			}
-
-			String opId1 = null;
-			String opName1;
-			try {
-				opId1 = mManualPickup.group(3);
-				opName1 = getOptionName(opId1);
-			} catch (IllegalStateException e) {
-				opName1 = StringUtils.EMPTY;
-			}
-
-			String opId2 = null;
-			String opName2;
-			try {
-				opId2 = mManualPickup.group(4);
-				opName2 = getOptionName(opId2);
-			} catch (IllegalStateException e) {
-				opName2 = StringUtils.EMPTY;
-			}
-
-			String opId3 = null;
-			String opName3;
-			try {
-				opId3 = mManualPickup.group(5);
-				opName3 = getOptionName(opId3);
-			} catch (IllegalStateException e) {
-				opName3 = StringUtils.EMPTY;
-			}
-
-			String itemName = opName1 + opName2 + opName3 + name;
-
-			ItemTable newItem = new ItemTable(data.getDate(), itemName);
-			itemTable.getItems().add(newItem);
-			scrollTo(newItem);
-
-			if (isNotify(id, opId1, opId2, opId3, name, opName1, opName2, opName3)) {
-				notifySound();
-			}
-
-			LOG.info("拾得 : " + itemName);
-
 			return true;
 		}
 
@@ -308,17 +316,6 @@ public class ItemLogic implements IPacketExecutable, IConfigurable {
 		return id != null && notifyItemCodes.contains(id);
 	}
 
-	private void notifySound() {
-
-		if (isNotify) {
-			Runnable runnable = (Runnable) Toolkit.getDefaultToolkit().getDesktopProperty("win.sound.default");
-
-			if (runnable != null) {
-				runnable.run();
-			}
-		}
-	}
-
 	/**
 	 * オプション名を返す.
 	 *
@@ -346,7 +343,7 @@ public class ItemLogic implements IPacketExecutable, IConfigurable {
 
 	private Set<String> getPropertyValue(Properties config, String propertyKey) {
 		String value = config.getProperty(propertyKey, "");
-		if(value.isEmpty()) {
+		if (value.isEmpty()) {
 			return new HashSet<String>();
 		} else {
 			return new HashSet<String>(Arrays.asList(value.split(",")));
@@ -384,19 +381,20 @@ public class ItemLogic implements IPacketExecutable, IConfigurable {
 
 		Platform.runLater(() -> {
 			itemTable.scrollTo(item);
-//                	itemTable.requestFocus();
 		});
 	}
-	
+
 	void setNotifyOptionNames(Set<String> notifyOptionNames) {
 		this.notifyOptionNames = notifyOptionNames;
 	}
-	
-	public void initNumOfGold() {
+
+	public void clearNumOfGold() {
 		gold = 0;
-		numOfGold.setText(String.valueOf(0));
+		Platform.runLater(() -> {
+			numOfGold.setText(String.valueOf(0));
+		});
 	}
-	
+
 	private String formatNumOfGold(int gold) {
 		return RamidoreUtil.thoudsndsSeparate(gold);
 	}

@@ -34,7 +34,8 @@ public class MimiChatTable extends ChatTable {
      * @param content 発言内容
      */
     public MimiChatTable(final Date date, final String prefix, final String name, final String content) {
-        super(date, prefix, name, content);
+//        super(date, prefix, name, content);
+    	super(date,prefix + " " + name, content);
     }
 
     /**

@@ -46,7 +46,7 @@ import org.ramidore.core.PacketData;
 
 import com.sun.jna.Platform;
 
-class ChatLoggerTest extends ChatLogger {
+class MessageKeeperTest extends MessageKeeper {
 
 	@Test
 	void test_1() throws Exception {

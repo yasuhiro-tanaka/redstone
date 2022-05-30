@@ -26,7 +26,7 @@ import org.ramidore.bean.RedStoneChartBean;
 import org.ramidore.component.OshiraseJDialog;
 import org.ramidore.controller.AbstractMainController;
 import org.ramidore.core.PacketAnalyzeService;
-import org.ramidore.logic.ChatLoggerLogic;
+import org.ramidore.logic.MessageKeeperLogic;
 import org.ramidore.logic.system.RedstoneLogic;
 
 import javafx.animation.AnimationTimer;
@@ -60,7 +60,7 @@ import javafx.stage.Stage;
  *
  * @author atmark
  */
-public class ChatLoggerController extends AbstractMainController {
+public class MessageKeeperController extends AbstractMainController {
 
     /**
      * 叫び 表示用テーブル.
@@ -317,7 +317,7 @@ public class ChatLoggerController extends AbstractMainController {
     @Override
     public void concreteInitialize() {
 
-        setService(new PacketAnalyzeService(new ChatLoggerLogic(), getConfig()));
+        setService(new PacketAnalyzeService(new MessageKeeperLogic(), getConfig()));
 
         loadConfig();
 
@@ -337,7 +337,7 @@ public class ChatLoggerController extends AbstractMainController {
 
         // コントローラーのフィールドとデータクラスのプロパティーを紐付ける
 
-        ChatLoggerLogic logic = (ChatLoggerLogic) getService().getLogic();
+        MessageKeeperLogic logic = (MessageKeeperLogic) getService().getLogic();
 
         sakebiChatDate.setCellValueFactory(new PropertyValueFactory<>("date"));
         sakebiChatName.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -375,7 +375,7 @@ public class ChatLoggerController extends AbstractMainController {
         logic.getItemLogic().setItemTable(itemTable);
         logic.getItemLogic().setNumOfGold(numOfGold);
         
-        logic.getHuntLogic().setNumOfKillMob(numOfKillMobLabel);
+        logic.getHuntInfoLogic().setNumOfKillMob(numOfKillMobLabel);
         
 
         setUpContextMenu(sakebiChatTable);
@@ -477,7 +477,7 @@ public class ChatLoggerController extends AbstractMainController {
         //jfxPanel.setVisible(noticeable);
         oshiraseWindow.setOnAction(e -> {
 
-            ((ChatLoggerLogic) getService().getLogic()).setNoticeable(oshiraseWindow.isSelected());
+            ((MessageKeeperLogic) getService().getLogic()).setNoticeable(oshiraseWindow.isSelected());
 
             // スライダーのenable/disable切り替え
             opacitySlider.setDisable(!oshiraseWindow.isSelected());
@@ -485,20 +485,20 @@ public class ChatLoggerController extends AbstractMainController {
             //jfxPanel.setVisible(oshiraseWindow.isSelected());
         });
 
-        sakebiMenu.setSelected(((ChatLoggerLogic) getService().getLogic()).getSakebiChatLogic().isNoticeable());
-        sakebiMenu.setOnAction(e -> ((ChatLoggerLogic) getService().getLogic()).getSakebiChatLogic().setEnabled(sakebiMenu.isSelected()));
+        sakebiMenu.setSelected(((MessageKeeperLogic) getService().getLogic()).getSakebiChatLogic().isNoticeable());
+        sakebiMenu.setOnAction(e -> ((MessageKeeperLogic) getService().getLogic()).getSakebiChatLogic().setEnabled(sakebiMenu.isSelected()));
 
-        normalMenu.setSelected(((ChatLoggerLogic) getService().getLogic()).getNormalChatLogic().isNoticeable());
-        normalMenu.setOnAction(e -> ((ChatLoggerLogic) getService().getLogic()).getNormalChatLogic().setEnabled(normalMenu.isSelected()));
+        normalMenu.setSelected(((MessageKeeperLogic) getService().getLogic()).getNormalChatLogic().isNoticeable());
+        normalMenu.setOnAction(e -> ((MessageKeeperLogic) getService().getLogic()).getNormalChatLogic().setEnabled(normalMenu.isSelected()));
 
-        partyMenu.setSelected(((ChatLoggerLogic) getService().getLogic()).getPartyChatLogic().isNoticeable());
-        partyMenu.setOnAction(e -> ((ChatLoggerLogic) getService().getLogic()).getPartyChatLogic().setEnabled(partyMenu.isSelected()));
+        partyMenu.setSelected(((MessageKeeperLogic) getService().getLogic()).getPartyChatLogic().isNoticeable());
+        partyMenu.setOnAction(e -> ((MessageKeeperLogic) getService().getLogic()).getPartyChatLogic().setEnabled(partyMenu.isSelected()));
 
-        guildMenu.setSelected(((ChatLoggerLogic) getService().getLogic()).getGuildChatLogic().isNoticeable());
-        guildMenu.setOnAction(e -> ((ChatLoggerLogic) getService().getLogic()).getGuildChatLogic().setEnabled(guildMenu.isSelected()));
+        guildMenu.setSelected(((MessageKeeperLogic) getService().getLogic()).getGuildChatLogic().isNoticeable());
+        guildMenu.setOnAction(e -> ((MessageKeeperLogic) getService().getLogic()).getGuildChatLogic().setEnabled(guildMenu.isSelected()));
 
-        mimiMenu.setSelected(((ChatLoggerLogic) getService().getLogic()).getMimiChatLogic().isNoticeable());
-        mimiMenu.setOnAction(e -> ((ChatLoggerLogic) getService().getLogic()).getMimiChatLogic().setEnabled(mimiMenu.isSelected()));
+        mimiMenu.setSelected(((MessageKeeperLogic) getService().getLogic()).getMimiChatLogic().isNoticeable());
+        mimiMenu.setOnAction(e -> ((MessageKeeperLogic) getService().getLogic()).getMimiChatLogic().setEnabled(mimiMenu.isSelected()));
 
         // クリアボタン押下
         clearButton.setOnAction(event -> {
@@ -508,17 +508,20 @@ public class ChatLoggerController extends AbstractMainController {
             partyChatTable.getItems().clear();
             guildChatTable.getItems().clear();
             mimiChatTable.getItems().clear();
+            itemTable.getItems().clear();
             
+            MessageKeeperLogic logic = (MessageKeeperLogic) getService().getLogic();
+            // TODO クリア処理実装
             numOfUniqueLabel.setText("0");
-            numOfKillMobLabel.setText("0");
-            numOfGold.setText("0");
+            logic.getHuntInfoLogic().clearNumOfKillMob();
+            logic.getItemLogic().clearNumOfGold();
             
         });
 
         // お知らせ表示行数
         SingleSelectionModel<Integer> selectionModel = oshiraseLineCountCb.getSelectionModel();
-        selectionModel.select(((ChatLoggerLogic) getService().getLogic()).getOshiraseLineCount() - 1);
-        selectionModel.selectedIndexProperty().addListener((ov, oldVal, newVal) -> ((ChatLoggerLogic) getService().getLogic()).setOshiraseLineCount(newVal.intValue() + 1));
+        selectionModel.select(((MessageKeeperLogic) getService().getLogic()).getOshiraseLineCount() - 1);
+        selectionModel.selectedIndexProperty().addListener((ov, oldVal, newVal) -> ((MessageKeeperLogic) getService().getLogic()).setOshiraseLineCount(newVal.intValue() + 1));
 
         // お知らせウインドウの透明度
         opacitySlider.setMin(0.0d);
@@ -569,7 +572,7 @@ public class ChatLoggerController extends AbstractMainController {
      */
     private void addDataToSeries() {
 
-        RedstoneLogic redstone = ((ChatLoggerLogic) getService().getLogic()).getRedstoneLogic();
+        RedstoneLogic redstone = ((MessageKeeperLogic) getService().getLogic()).getRedstoneLogic();
 
         if (redstone.getChartDataQ().isEmpty()) {
             return;

@@ -15,7 +15,6 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-17">
 		<attributes>
-			<attribute name="module" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
@@ -25,16 +24,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/javafx"/>
-	<classpathentry kind="lib" path="/chatlogger/lib/commons-io-2.4.jar"/>
-	<classpathentry kind="lib" path="/chatlogger/lib/commons-lang3-3.3.2.jar"/>
-	<classpathentry kind="lib" path="/chatlogger/lib/logback-classic-1.0.11.jar"/>
-	<classpathentry kind="lib" path="/chatlogger/lib/logback-core-1.0.11.jar"/>
-	<classpathentry kind="lib" path="/chatlogger/lib/slf4j-api-1.7.5.jar"/>
-	<classpathentry kind="lib" path="/chatlogger/lib/pcap4j-core-1.8.2.jar"/>
-	<classpathentry kind="lib" path="/chatlogger/lib/pcap4j-packetfactory-propertiesbased-1.8.2.jar"/>
-	<classpathentry kind="lib" path="/chatlogger/lib/pcap4j-packetfactory-static-1.8.2.jar"/>
-	<classpathentry kind="lib" path="/chatlogger/lib/pcap4j-packettest-1.8.2-tests.jar"/>
-	<classpathentry kind="lib" path="/chatlogger/lib/pcap4j-sample-1.8.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

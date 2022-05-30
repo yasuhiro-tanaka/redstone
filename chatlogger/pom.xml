@@ -19,8 +19,8 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>org.chatlogger</groupId>
-	<name>chatlogger</name>
+	<groupId>org.messagekeeper</groupId>
+	<name>messagekeeper</name>
 
 	<packaging>jar</packaging>
 	<version>0.0.6</version>
@@ -40,8 +40,9 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<version>3.10.1</version>
+					<source>17</source>
+					<target>17</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -49,7 +50,7 @@
 				<artifactId>javafx-maven-plugin</artifactId>
 				<version>2.0</version>
 				<configuration>
-					<mainClass>org.ramidore.ChatLogger</mainClass>
+					<mainClass>org.ramidore.MessageKeeper</mainClass>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -97,6 +98,11 @@
 			<artifactId>pcap4j-packetfactory-static</artifactId>
 			<version>1.8.2</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
 		<!-- 
 		<dependency>
 			<groupId>org.ramidore</groupId>
@@ -106,5 +112,5 @@
 		-->
 	</dependencies>
 
-	<artifactId>chatlogger</artifactId>
+	<artifactId>messagekeeper</artifactId>
 </project>

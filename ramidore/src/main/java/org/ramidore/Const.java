@@ -60,7 +60,7 @@ public final class Const {
     /**
      * dumpcapのダンプ出力先
      */
-    public static final String DUMPCAP_LOG_PATH = "D:\\soft\\eclipse\\eclipse\\workspace\\sandbox\\chatlogger\\dumplog.pcap";
+    public static final String DUMPCAP_LOG_PATH = ".\\dumplog.pcap";
 
     /**
      * デフォルト実行モード
@@ -84,7 +84,7 @@ public final class Const {
     /**
      * 不明パケット出力先
      */
-    public static final String UNKNOWN_PACKET_LOG_PATH = "D:\\soft\\eclipse\\eclipse\\workspace\\sandbox\\chatlogger\\unknown_packetlog.txt";
+    public static final String UNKNOWN_PACKET_LOG_PATH = ".\\unknown_packetlog.txt";
 
 
     
