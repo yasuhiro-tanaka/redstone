@@ -16,16 +16,16 @@
 
 package org.ramidore.logic.chat;
 
+import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.ramidore.Const;
 import org.ramidore.bean.MimiChatTable;
 import org.ramidore.core.PacketData;
 import org.ramidore.util.RamidoreUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Properties;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 耳打ちのパケットを処理する.
@@ -47,27 +47,30 @@ public class MimiChatLogic extends AbstractChatLogic {
     /**
      * FROMのプレフィックス.
      */
-    private static final String PREFIX_FROM = "(?:.{2}+)005811CCCCCCCC....4CC0";
+//    private static final String PREFIX_FROM = "(?:.{2}+)005811CCCCCCCC....4CC0";
+    private static final String PREFIX_FROM = "(?:.{2}+)005811CCCC....4C80";
 
     /**
      * . 耳をするパターン
      */
-    private static final String PATTERN_TO = "^..002811CDCDCDCD..000000" + PREFIX_TO + Const.BASE_PATTERN + "(?:00+)"
-            + Const.BASE_PATTERN + "000000(?:.{2})*$";
+//    private static final String PATTERN_TO = "^..002811CDCDCDCD..000000" + PREFIX_TO + Const.BASE_PATTERN + "(?:00+)"
+//            + Const.BASE_PATTERN + "000000(?:.{2})*$";
+    private static final String PATTERN_TO = "^.*2811CDCD..00.*" + PREFIX_TO + Const.BASE_PATTERN + "(?:00+)(?:CC+)"
+    		+ Const.BASE_PATTERN + "(?:00+)(?:CC+)";
 
     /**
      * . 耳が来るパターン
      */
-    private static final String PATTERN_FROM = "^..002811CDCDCDCD..000000" + PREFIX_FROM + Const.BASE_PATTERN + "00"
-            + Const.BASE_PATTERN + "000000(?:.{2})*$";
+    private static final String PATTERN_FROM = "^.*2811CDCD..00.*" + PREFIX_FROM + Const.BASE_PATTERN + "00"
+            + Const.BASE_PATTERN + "00(?:.{2})*$";
 
     /**
      * From, Toが1パケットにまとまって来る場合のパターン.
      * 自分自身に耳をする場合のみ？
      */
-    private static final String PATTERN_FROM_TO = "^..002811CDCDCDCD..000000" + PREFIX_TO + Const.BASE_PATTERN
-            + "0000000000000000" + Const.BASE_PATTERN + "0{2}+" + PREFIX_FROM + Const.BASE_PATTERN + "00"
-            + Const.BASE_PATTERN + "000000(?:.{2})*$";
+    private static final String PATTERN_FROM_TO = "^.*2811CDCD..00.*" + PREFIX_TO + Const.BASE_PATTERN
+            + "(?:00+)(?:CC+)" + Const.BASE_PATTERN + "(?:00+)(?:CC+)" + PREFIX_FROM + Const.BASE_PATTERN + "00"
+            + Const.BASE_PATTERN + "00(?:.{2})*$";
 
     /**
      * . 正規表現オブジェクト

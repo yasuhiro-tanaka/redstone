@@ -176,7 +176,7 @@ public class OnlineTask extends AbstractTask {
 	 * キャプチャを停止する.
 	 */
 	public void stop() {
-
+		
 		// キャプチャ開始前に終了する場合nullチェック
 		if (handle != null) {
 			try {

@@ -23,7 +23,6 @@ import org.pcap4j.core.PcapAddress;
 import org.pcap4j.core.PcapDumper;
 import org.pcap4j.core.PcapNetworkInterface;
 import org.pcap4j.packet.Packet;
-import org.pcap4j.sample.Dump;
 import org.ramidore.Const;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +50,7 @@ public class DumperTask extends OnlineTask {
     /**
      * ダンプファイル
      */
-    private static String DUMP_FILE_NAME = Dump.class.getName() + ".pcapFile";
+    private static String DUMP_FILE_NAME = PcapDumper.class.getName() + ".pcapFile";
 
     /**
      * コンストラクタ.
